@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WebApp.Models.ImageView>
+
+<h2>Product images</h2>
+<form method="post" asp-action="Index" asp-controller="Home" enctype="multipart/form-data">
+  <input type="file" name="files" multiple />
+  <input type="submit" value="Upload" />
+</form>
+
+
+<p>
+  @*<a asp-action="Create">Upload New</a>*@
+</p>
+<hr />
+<table class="table">
+  <thead>
+    <tr></tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model) {
+    <tr>
+      <td style="text-align:center">
+        <img src="@Url.Content("~/images/" + item.image.Picture)" alt="@item.name" height="150" />
+        <br />
+        @Html.DisplayFor(modelItem => item.name)
+        <br />
+        @if (item.liked) { 
+        <a asp-action="Like" asp-route-id="@item.image.ImageId" asp-route-like="false">
+          <img src="@Url.Content("~/images/unlike.png")" alt="unlike" height="30" />
+        </a>
+        } else { 
+        <a asp-action="Like" asp-route-id="@item.image.ImageId"  asp-route-like="true">
+          <img src="@Url.Content("~/images/like.png")" alt="like" height="30" />
+        </a>
+        }
+        <span> @item.likes</span>
+
+
+        <br />
+
+      </td>
+      <td>
+        @*<a asp-action="Edit" asp-route-id="@item.ImageId">Edit</a> |
+          <a asp-action="Details" asp-route-id="@item.ImageId">Details</a> |
+          <a asp-action="Delete" asp-route-id="@item.ImageId">Delete</a>*@
+      </td>
+    </tr>
+      }
+  </tbody>
+</table>
