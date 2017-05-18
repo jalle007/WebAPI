@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<WebApp.Models.ImageView>
-
+@{
+  string apiURL = "http://localhost:7368/";
+}
 <h2>Product images</h2>
 <form method="post" asp-action="Index" asp-controller="Home" enctype="multipart/form-data">
   <input type="file" name="files" multiple />
@@ -17,9 +19,10 @@
   </thead>
   <tbody>
     @foreach (var item in Model) {
+      var imgUrl = apiURL + "images/" + item.image.Picture;
     <tr>
       <td style="text-align:center">
-        <img src="@Url.Content("~/images/" + item.image.Picture)" alt="@item.name" height="150" />
+        <img src="@imgUrl" alt="@item.name" height="150" />
         <br />
         @Html.DisplayFor(modelItem => item.name)
         <br />

@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+
 using ProductAPI.Models;
 
 namespace ProductAPI.Controllers {
@@ -27,9 +26,11 @@ namespace ProductAPI.Controllers {
                 var uploads = Path.Combine(_environment.WebRootPath, "images");
                 string fileName = "product"+productCode+"-"+Path.GetRandomFileName()+"-"+ file.FileName;
 
+                
                  using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                 {
-                    await file.CopyToAsync(fileStream);
+                      await file.CopyToAsync(fileStream);
+                      fileStream.Flush();
                 }
 
                 //now save to database
@@ -46,25 +47,26 @@ namespace ProductAPI.Controllers {
                 return Ok(new { Name = fileName});
         }
 
- 
+       
+
        ///ToDo : Azure 
-       public async Task<string> UploadFileAsBlob(Stream stream, string filename)
-        {//_configuration["ConnectionString:StorageConnectionString"]
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse("");
+       //public async Task<string> UploadFileAsBlob(Stream stream, string filename)
+       // {//_configuration["ConnectionString:StorageConnectionString"]
+       //     CloudStorageAccount storageAccount = CloudStorageAccount.Parse("");
 
-            // Create the blob client.
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+       //     // Create the blob client.
+       //     CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
-            // Retrieve a reference to a container.
-            CloudBlobContainer container = blobClient.GetContainerReference("profileimages");
+       //     // Retrieve a reference to a container.
+       //     CloudBlobContainer container = blobClient.GetContainerReference("profileimages");
 
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
+       //     CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
 
-            await blockBlob.UploadFromStreamAsync(stream);
+       //     await blockBlob.UploadFromStreamAsync(stream);
 
-            stream.Dispose();
-            return blockBlob?.Uri.ToString();
-        }
+       //     stream.Dispose();
+       //     return blockBlob?.Uri.ToString();
+       // }
  
     }
   }

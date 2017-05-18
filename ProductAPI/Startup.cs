@@ -32,7 +32,16 @@ namespace ProductAPI
         {
             // Add framework services.
             services.AddMvc();
-            var connection = @"Data Source=mylaptop;Initial Catalog=ProductLikes;Integrated Security=True";
+
+          /*
+            * Server=tcp:productapi20170517052226dbserver.database.windows.net;Database=ProductAPI20170517052226_db;
+User ID=jaskobh@hotmail.com;Password=Tibra2016&;Trusted_Connection=False;
+Encrypt=True;
+            * */
+
+        var connection = @"Server=tcp:productapi20170517052226dbserver.database.windows.net;Database=ProductAPI20170517052226_db;
+User ID=jalle;Password=keyboard123!;Trusted_Connection=False;Encrypt=True;";
+            //var connection = @"Data Source=mylaptop;Initial Catalog=ProductLikes;Integrated Security=True";
             services.AddDbContext<ProductLikesContext>(options => options.UseSqlServer(connection));
 
         services.AddSwaggerGen(c =>
