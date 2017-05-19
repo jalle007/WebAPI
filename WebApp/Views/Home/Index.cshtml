@@ -19,10 +19,10 @@
   </thead>
   <tbody>
     @foreach (var item in Model) {
-      var imgUrl = apiURL + "images/" + item.image.Picture;
+     // var imgUrl = apiURL + "images/" + item.image.Picture;
     <tr>
       <td style="text-align:center">
-        <img src="@imgUrl" alt="@item.name" height="150" />
+        <img src="@item.image.Picture" alt="@item.name" height="150" />
         <br />
         @Html.DisplayFor(modelItem => item.name)
         <br />

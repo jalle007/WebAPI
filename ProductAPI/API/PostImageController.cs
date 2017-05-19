@@ -3,70 +3,85 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using ProductAPI.Models;
 
 namespace ProductAPI.Controllers {
 
   //PostImage controller
   [Route("api/[controller]")]
-  [Consumes("application/json","multipart/form-data")]
+  [Consumes("application/json", "multipart/form-data")]
   public class PostImageController : Controller {
     private readonly ProductLikesContext _context;
+    public static IConfigurationRoot Configuration { get; set; }
+
     private IHostingEnvironment _environment;
 
-        public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
-        _context = context;
-         _environment = environment;
-        }
-      
-        [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
-        public async Task<IActionResult> Upload(IFormFile file,string userId, int productCode, int platformId, string deviceType, string deviceId)
-        {
-                var uploads = Path.Combine(_environment.WebRootPath, "images");
-                string fileName = "product"+productCode+"-"+Path.GetRandomFileName()+"-"+ file.FileName;
+    public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
+      _context = context;
+      _environment = environment;
+      }
 
-                
-                 using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
-                {
-                      await file.CopyToAsync(fileStream);
-                      fileStream.Flush();
-                }
 
-                //now save to database
-                var img = new Image { 
-                                      Picture=fileName,
-                                      DeviceId=deviceId,
-                                      DeviceType=deviceType,
-                                      ProductId=productCode,
-                                      UserId=userId,
-                };
-                _context.Image.Add(img);
-                _context.SaveChanges();
+    //azure upload********************************************************************
+    [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
+    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
 
-                return Ok(new { Name = fileName});
+      var uploads = Path.Combine(_environment.WebRootPath, "images");
+      string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
+
+      string conn = @"DefaultEndpointsProtocol=https;AccountName=images2;AccountKey=CZ32nzmWDqyoxfZwBagbZ9fY5cgzOBr1BjwUUW/R/dKQITTtCGGq59wZgRNwKdZmvTzA/SG2LXp5CCfDzTGLsw==;EndpointSuffix=core.windows.net";
+
+      CloudBlockBlob blockBlob;
+      CloudStorageAccount storageAccount = CloudStorageAccount.Parse(conn);
+
+      // Retrieve a reference to a container.
+      CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+      CloudBlobContainer container = blobClient.GetContainerReference("images2");
+      blockBlob = container.GetBlockBlobReference(fileName);
+
+      using (var fileStream = file.OpenReadStream()) 
+      {
+        await blockBlob.UploadFromStreamAsync(fileStream);
         }
 
-       
+      string fileUrl = blockBlob?.Uri.ToString();
+      Save2DB(userId, productCode, deviceType, deviceId, fileUrl);
 
-       ///ToDo : Azure 
-       //public async Task<string> UploadFileAsBlob(Stream stream, string filename)
-       // {//_configuration["ConnectionString:StorageConnectionString"]
-       //     CloudStorageAccount storageAccount = CloudStorageAccount.Parse("");
+      return Ok(new { Name = fileUrl });
+      }
 
-       //     // Create the blob client.
-       //     CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+    private void Save2DB (string userId, int productCode, string deviceType, string deviceId, string fileName) {
+      //now save to database
+      var img = new Image {
+        Picture = fileName,
+        DeviceId = deviceId,
+        DeviceType = deviceType,
+        ProductId = productCode,
+        UserId = userId,
+        };
+      _context.Image.Add(img);
+      _context.SaveChanges();
+      }
 
-       //     // Retrieve a reference to a container.
-       //     CloudBlobContainer container = blobClient.GetContainerReference("profileimages");
+          //local upload
+    //[HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
+    public async Task<IActionResult> Upload (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
+      var uploads = Path.Combine(_environment.WebRootPath, "images");
+      string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
-       //     CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
 
-       //     await blockBlob.UploadFromStreamAsync(stream);
+      using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create)) {
+        await file.CopyToAsync(fileStream);
+        fileStream.Flush();
+        }
 
-       //     stream.Dispose();
-       //     return blockBlob?.Uri.ToString();
-       // }
- 
+      Save2DB(userId, productCode, deviceType, deviceId, fileName);
+
+      return Ok(new { Name = fileName });
+      }
+
     }
   }
