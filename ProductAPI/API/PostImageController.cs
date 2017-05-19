@@ -38,7 +38,7 @@ namespace ProductAPI.Controllers {
 
       // Retrieve a reference to a container.
       CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-      CloudBlobContainer container = blobClient.GetContainerReference("images2");
+      CloudBlobContainer container = blobClient.GetContainerReference("images");
       blockBlob = container.GetBlockBlobReference(fileName);
 
       using (var fileStream = file.OpenReadStream()) {
