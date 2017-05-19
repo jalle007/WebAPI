@@ -13,22 +13,32 @@ namespace ProductAPI.Controllers {
       }
 
     //GET /api/getimages/1/popular
-    [HttpGet("{productCode}/{listOrder}")]
-    public JsonResult Get (int productCode, string listOrder) {
+    [HttpGet("{productCode}/{listOrder}/{pageNo}/{pageSize}")]
+    public JsonResult Get (int productCode, string listOrder, int pageNo, int pageSize ) 
+    {
+      // Determine the number of records to skip
+      int skip = (pageNo - 1) * pageSize;
+      // Get total number of records
+      int total1 = _context.Image.Count();
 
       var imageList = new List<Image>();
 
-      var popularImages = (from image in _context.Image
+      var popularImages = (
+                           from image in _context.Image
                            join l in _context.Like on image.ImageId equals l.ImageId into likes
                            where (image.ProductId == productCode)
-                           select new { image, Count = likes.Where(like => like.Liked).Count() }).
-                          OrderByDescending(like => like.Count);
+                           select new { image, Count = likes.Where(like => like.Liked).Count() })
+                           .OrderByDescending(like => like.Count)
+                          .Skip(skip)
+                          .Take(pageSize);
 
       var chronologicalImages = (from l in _context.Like
                                  join image in _context.Image on l.ImageId equals image.ImageId
                                  where (image.ProductId == productCode)
-                                 select new { image, l.Timestamp }).
-          OrderByDescending(like => like.Timestamp);
+                                 select new { image, l.Timestamp })
+                                 .OrderByDescending(like => like.Timestamp)
+                                 .Skip(skip)
+                                 .Take(pageSize);
 
       switch (listOrder) {
         case "popular":
@@ -43,6 +53,12 @@ namespace ProductAPI.Controllers {
 
       var response = new {
         Images =   imageList,
+        Paging = new  { 
+                     total =  total1,
+                     limit = pageSize,
+                    offset=skip,
+                    returned = imageList.Count()
+        },
         Error = false
         };
       return Json(response);

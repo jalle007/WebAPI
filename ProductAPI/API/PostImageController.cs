@@ -16,7 +16,6 @@ namespace ProductAPI.Controllers {
   public class PostImageController : Controller {
     private readonly ProductLikesContext _context;
     public static IConfigurationRoot Configuration { get; set; }
-
     private IHostingEnvironment _environment;
 
     public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
@@ -32,18 +31,17 @@ namespace ProductAPI.Controllers {
       var uploads = Path.Combine(_environment.WebRootPath, "images");
       string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
-      string conn = @"DefaultEndpointsProtocol=https;AccountName=images2;AccountKey=CZ32nzmWDqyoxfZwBagbZ9fY5cgzOBr1BjwUUW/R/dKQITTtCGGq59wZgRNwKdZmvTzA/SG2LXp5CCfDzTGLsw==;EndpointSuffix=core.windows.net";
+      string connStorage = Startup.connectionStrings.connStorage;
 
       CloudBlockBlob blockBlob;
-      CloudStorageAccount storageAccount = CloudStorageAccount.Parse(conn);
+      CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connStorage);
 
       // Retrieve a reference to a container.
       CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
       CloudBlobContainer container = blobClient.GetContainerReference("images2");
       blockBlob = container.GetBlockBlobReference(fileName);
 
-      using (var fileStream = file.OpenReadStream()) 
-      {
+      using (var fileStream = file.OpenReadStream()) {
         await blockBlob.UploadFromStreamAsync(fileStream);
         }
 
@@ -66,7 +64,7 @@ namespace ProductAPI.Controllers {
       _context.SaveChanges();
       }
 
-          //local upload
+    //local upload
     //[HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
     public async Task<IActionResult> Upload (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
       var uploads = Path.Combine(_environment.WebRootPath, "images");
