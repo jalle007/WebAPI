@@ -23,8 +23,7 @@ namespace ProductAPI.Controllers {
       _environment = environment;
       }
 
-
-    //azure upload********************************************************************
+    //azure upload 
     [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
     public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
 
@@ -46,6 +45,8 @@ namespace ProductAPI.Controllers {
         }
 
       string fileUrl = blockBlob?.Uri.ToString();
+
+      //saving image to a database
       Save2DB(userId, productCode, deviceType, deviceId, fileUrl);
 
       return Ok(new { Name = fileUrl });
@@ -64,22 +65,21 @@ namespace ProductAPI.Controllers {
       _context.SaveChanges();
       }
 
-    //local upload
+    //local upload - not used
     //[HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
-    public async Task<IActionResult> Upload (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
-      var uploads = Path.Combine(_environment.WebRootPath, "images");
-      string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
+    //public async Task<IActionResult> Upload (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
+    //  var uploads = Path.Combine(_environment.WebRootPath, "images");
+    //  string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
+    //  using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create)) {
+    //    await file.CopyToAsync(fileStream);
+    //    fileStream.Flush();
+    //    }
 
-      using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create)) {
-        await file.CopyToAsync(fileStream);
-        fileStream.Flush();
-        }
+    //  //save image to a database
+    //  Save2DB(userId, productCode, deviceType, deviceId, fileName);
 
-      Save2DB(userId, productCode, deviceType, deviceId, fileName);
-
-      return Ok(new { Name = fileName });
-      }
-
+    //  return Ok(new { Name = fileName });
+    //  }
     }
   }

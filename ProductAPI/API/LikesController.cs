@@ -22,8 +22,7 @@ namespace ProductAPI.Controllers {
       if (myLike != null) {
         myLike.Liked = likes;
         _context.SaveChanges();
-        } 
-          else // add new like
+        } else // add new like
           {
         var newLike = new Like {
           UserId = userId,
@@ -36,6 +35,5 @@ namespace ProductAPI.Controllers {
 
         }
       }
-
     }
   }

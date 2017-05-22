@@ -14,8 +14,7 @@ namespace ProductAPI.Controllers {
 
     //GET /api/getimages/1/popular
     [HttpGet("{productCode}/{listOrder}/{pageNo}/{pageSize}")]
-    public JsonResult Get (int productCode, string listOrder, int pageNo, int pageSize ) 
-    {
+    public JsonResult Get (int productCode, string listOrder, int pageNo, int pageSize) {
       // Determine the number of records to skip
       int skip = (pageNo - 1) * pageSize;
       // Get total number of records
@@ -42,23 +41,23 @@ namespace ProductAPI.Controllers {
 
       switch (listOrder) {
         case "popular":
-                imageList = popularImages.Select(img => img.image).ToList();
+        imageList = popularImages.Select(img => img.image).ToList();
         break;
         case "chronological":
-                imageList = chronologicalImages.Select(img => img.image).ToList();
+        imageList = chronologicalImages.Select(img => img.image).ToList();
         break;
         default:
         break;
         }
 
       var response = new {
-        Images =   imageList,
-        Paging = new  { 
-                     total =  total1,
-                     limit = pageSize,
-                    offset=skip,
-                    returned = imageList.Count()
-        },
+        Images = imageList,
+        Paging = new {
+          total = total1,
+          limit = pageSize,
+          offset = skip,
+          returned = imageList.Count()
+          },
         Error = false
         };
       return Json(response);
@@ -67,9 +66,9 @@ namespace ProductAPI.Controllers {
     //GET /api/getimages/1
     [HttpGet("{id}")]
     public JsonResult Get (int id) {
-    
+
       var image = _context.Image.SingleOrDefault(m => m.ImageId == id);
-      var product = _context.Product.SingleOrDefault(p=>p.ProductId==image.ProductId);
+      var product = _context.Product.SingleOrDefault(p => p.ProductId == image.ProductId);
       var likes = _context.Like.Where(m => m.ImageId == id && m.Liked).Count();
 
       var response = new {
@@ -83,7 +82,7 @@ namespace ProductAPI.Controllers {
         };
       return Json(response);
       }
-    
+
     // we will use this method for WebApp  to list all images
     //GET /api/getimages
     [HttpGet("user/{userId}")]
@@ -92,14 +91,14 @@ namespace ProductAPI.Controllers {
       var imageList = new List<Image>();
 
       var allImages = (from image in _context.Image
-                           join l in _context.Like on image.ImageId equals l.ImageId into likes
-                           join p in _context.Product on image.ProductId equals p.ProductId
-                           select new ImageView  {
-                                              image = image, 
-                                              name  = p.Name, 
-                                              likes    = likes.Where(like => like.Liked).Count(),
-                                              liked    = likes.Where(l1=>( l1.UserId==userId ) && (l1.ImageId==image.ImageId)).FirstOrDefault().Liked 
-                                              }).OrderByDescending(like => like.likes);
+                       join l in _context.Like on image.ImageId equals l.ImageId into likes
+                       join p in _context.Product on image.ProductId equals p.ProductId
+                       select new ImageView {
+                         image = image,
+                         name = p.Name,
+                         likes = likes.Where(like => like.Liked).Count(),
+                         liked = likes.Where(l1 => (l1.UserId == userId) && (l1.ImageId == image.ImageId)).FirstOrDefault().Liked
+                         }).OrderByDescending(like => like.likes);
 
       //var response = new {
       //  Images =   allImages,
@@ -107,6 +106,6 @@ namespace ProductAPI.Controllers {
       //  };
       return Json(allImages);
       }
-       
+
     }
   }
