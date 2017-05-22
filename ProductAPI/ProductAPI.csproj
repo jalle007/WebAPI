@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <Compile Remove="API\PageLinkBuilder.cs" />
+    <Compile Remove="Repository\DBEntities.cs" />
+    <Compile Remove="Repository\GenericRepository.cs" />
+    <Compile Remove="Repository\IEntity.cs" />
+    <Compile Remove="Repository\IGenericRepository.cs" />
+    <Compile Remove="Repository\ImageRepository2.cs" />
+    <Compile Remove="Repository\IRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Repository\Interfaces\ILikesRepository.cs" />
   </ItemGroup>
 
 </Project>

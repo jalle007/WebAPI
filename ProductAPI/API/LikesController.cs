@@ -1,37 +1,42 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using ProductAPI.Models;
+using ProductAPI.Repository;
 
 namespace ProductAPI.Controllers {
 
   //LIKES controller
   [Route("api/[controller]")]
   public class LikesController : Controller {
-    private readonly ProductLikesContext _context;
-    public LikesController (ProductLikesContext context) { _context = context; }
+    private LikeRepository _likeRepository;
 
-    //we will use same method for Like and Unlike
+    public LikesController (ProductLikesContext context) {
+      _likeRepository = new LikeRepository(context);
+      }
+
+    // We will use same method for Like and Unlike
     // POST api/likes/userId/platformId/imageId/true|false     
     [HttpPost("{userId}/{platformId}/{imageId}/{likes}")]
     public void Post (string userId, int platformId, int imageId, bool likes) {
 
-      //update existing like
-      var myLike = (from like in _context.Like
+      var myLike = (from like in _likeRepository.GetAll()
                     where (like.UserId == userId) && (like.PlatformId == platformId) && (like.ImageId == imageId)
                     select like).FirstOrDefault();
-      if (myLike != null) {
+
+      if (myLike != null) 
+      { //update like
         myLike.Liked = likes;
-        _context.SaveChanges();
-        } else // add new like
-          {
+        _likeRepository.AddOrUpdate(myLike);
+        }
+        // add new like
+        else {
         var newLike = new Like {
           UserId = userId,
           ImageId = imageId,
           PlatformId = platformId,
           Liked = true
           };
-        _context.Like.Add(newLike);
-        _context.SaveChanges();
+        _likeRepository.AddOrUpdate(newLike);
 
         }
       }

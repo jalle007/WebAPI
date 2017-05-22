@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ProductAPI.Models;
+using ProductAPI.Repository;
 
 namespace ProductAPI.Controllers {
 
@@ -14,13 +15,13 @@ namespace ProductAPI.Controllers {
   [Route("api/[controller]")]
   [Consumes("application/json", "multipart/form-data")]
   public class PostImageController : Controller {
-    private readonly ProductLikesContext _context;
     public static IConfigurationRoot Configuration { get; set; }
     private IHostingEnvironment _environment;
+    private ImageRepository _imageRepository;
 
     public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
-      _context = context;
       _environment = environment;
+      _imageRepository = new ImageRepository(context);
       }
 
     //azure upload 
@@ -44,42 +45,20 @@ namespace ProductAPI.Controllers {
         await blockBlob.UploadFromStreamAsync(fileStream);
         }
 
-      string fileUrl = blockBlob?.Uri.ToString();
-
-      //saving image to a database
-      Save2DB(userId, productCode, deviceType, deviceId, fileUrl);
-
-      return Ok(new { Name = fileUrl });
-      }
-
-    private void Save2DB (string userId, int productCode, string deviceType, string deviceId, string fileName) {
-      //now save to database
+      string imageUrl = blockBlob?.Uri.ToString();
       var img = new Image {
-        Picture = fileName,
+        Picture = imageUrl,
         DeviceId = deviceId,
         DeviceType = deviceType,
         ProductId = productCode,
         UserId = userId,
         };
-      _context.Image.Add(img);
-      _context.SaveChanges();
+
+      //saving image to a database
+      _imageRepository.AddOrUpdate(img);
+
+      return Ok(new { Name = imageUrl });
       }
 
-    //local upload - not used
-    //[HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
-    //public async Task<IActionResult> Upload (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
-    //  var uploads = Path.Combine(_environment.WebRootPath, "images");
-    //  string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
-
-    //  using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create)) {
-    //    await file.CopyToAsync(fileStream);
-    //    fileStream.Flush();
-    //    }
-
-    //  //save image to a database
-    //  Save2DB(userId, productCode, deviceType, deviceId, fileName);
-
-    //  return Ok(new { Name = fileName });
-    //  }
     }
   }
