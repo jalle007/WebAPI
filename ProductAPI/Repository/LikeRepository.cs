@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductAPI.Models;
 
 namespace ProductAPI.Repository {
-  public class LikeRepository : ILikeRepository {
+  public class LikeRepository : IGenericRepository<Like> {
     private ProductLikesContext _context;
     private DbSet<Like> likeEntity;
     public LikeRepository (ProductLikesContext context) {

@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProductAPI.Models;
+using ProductAPI.Service;
 
 namespace ProductAPI.Controllers {
   public class HomeController : Controller

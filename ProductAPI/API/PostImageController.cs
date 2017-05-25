@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ProductAPI.Models;
-using ProductAPI.Repository;
+using ProductAPI.Service;
 
 namespace ProductAPI.Controllers {
 
@@ -17,11 +17,11 @@ namespace ProductAPI.Controllers {
   public class PostImageController : Controller {
     public static IConfigurationRoot Configuration { get; set; }
     private IHostingEnvironment _environment;
-    private ImageRepository _imageRepository;
+    private ImageService _imageService;
 
-    public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
+    public PostImageController (ImageService imageService, IHostingEnvironment environment) {
       _environment = environment;
-      _imageRepository = new ImageRepository(context);
+      _imageService = imageService;
       }
 
     //azure upload 
@@ -55,7 +55,7 @@ namespace ProductAPI.Controllers {
         };
 
       //saving image to a database
-      _imageRepository.AddOrUpdate(img);
+      _imageService.AddOrUpdate(img);
 
       return Ok(new { Name = imageUrl });
       }
