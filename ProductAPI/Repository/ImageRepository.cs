@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductAPI.Models;
 
 namespace ProductAPI.Repository {
-  public class ImageRepository : IImageRepository {
+  public class ImageRepository : IGenericRepository<Image> {
     private ProductLikesContext _context;
     private DbSet<Image> imageEntity;
     public ImageRepository (ProductLikesContext context) {

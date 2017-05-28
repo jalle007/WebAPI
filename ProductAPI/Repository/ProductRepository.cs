@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ProductAPI.Models;
 
 namespace ProductAPI.Repository {
-  public class ProductRepository : IProductRepository {
+  public class ProductRepository : IGenericRepository<Product> {
     private ProductLikesContext _context;
     private DbSet<Product> productEntity;
     public ProductRepository (ProductLikesContext context) {
@@ -25,6 +26,12 @@ namespace ProductAPI.Repository {
       _context.SaveChanges();
       }
 
+    public void AddOrUpdate (Product entity) {
+      throw new NotImplementedException();
+      }
 
+    public void Save () {
+      throw new NotImplementedException();
+      }
     }
   }

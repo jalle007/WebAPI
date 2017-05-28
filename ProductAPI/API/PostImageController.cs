@@ -17,19 +17,17 @@ namespace ProductAPI.Controllers {
   public class PostImageController : Controller {
     public static IConfigurationRoot Configuration { get; set; }
     private IHostingEnvironment _environment;
-    private ImageRepository _imageRepository;
+   private MyRepository _repository;
 
     public PostImageController (ProductLikesContext context, IHostingEnvironment environment) {
       _environment = environment;
-      _imageRepository = new ImageRepository(context);
+      _repository = new MyRepository(context);
       }
 
     //azure upload 
     [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
     public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId, string title, string description) {
     
-    
-
       var uploads = Path.Combine(_environment.WebRootPath, "images");
       string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
@@ -59,7 +57,7 @@ namespace ProductAPI.Controllers {
         };
 
       //saving image to a database
-      _imageRepository.AddOrUpdate(img);
+      _repository._images.AddOrUpdate(img);
 
       return Ok(new { Name = imageUrl });
       }
