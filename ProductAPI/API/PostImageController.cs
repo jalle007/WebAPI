@@ -26,7 +26,9 @@ namespace ProductAPI.Controllers {
 
     //azure upload 
     [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
-    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId) {
+    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId, string title, string description) {
+    
+    
 
       var uploads = Path.Combine(_environment.WebRootPath, "images");
       string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
@@ -52,6 +54,8 @@ namespace ProductAPI.Controllers {
         DeviceType = deviceType,
         ProductId = productCode,
         UserId = userId,
+        Title=title,
+        Description=description
         };
 
       //saving image to a database
