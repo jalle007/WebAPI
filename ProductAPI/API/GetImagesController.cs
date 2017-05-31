@@ -39,17 +39,27 @@ namespace ProductAPI.Controllers {
 
     //GET /api/getimages/1
     [HttpGet("{id}")]
-    public JsonResult Get (int id) {
+    public JsonResult Get (int id, string userId ="") {
       var image = _repository._images.GetSingle ( id);
       var product = _repository._products.GetSingle(image.ProductId);
       var likes =_repository._likes.GetAll().Where(m => m.ImageId == id && m.Liked).Count();
+
+      bool isLiked = false;
+      if (userId != "") {
+        var res = _repository._likes.GetAll().Where(m => m.ImageId == id && m.UserId == userId);
+        if (res.Count() > 0) 
+          isLiked=res.FirstOrDefault().Liked;      
+      }
 
       var response = new {
         Data = new {
           Picture = image.Picture,
           UserId = image.UserId,
           Likes = likes,
-          ProductName = product.Name
+          ProductName = product.Name,
+          Title = image.Title,
+          Description = image.Description,
+          Liked = isLiked
           },
         Error = false
         };

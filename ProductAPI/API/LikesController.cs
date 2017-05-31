@@ -8,23 +8,21 @@ namespace ProductAPI.Controllers {
   //LIKES controller
   [Route("api/[controller]")]
   public class LikesController : Controller {
-     private MyRepository  _repository;
+    private MyRepository _repository;
 
     public LikesController (ProductLikesContext context) {
-        _repository = new MyRepository(context);
+      _repository = new MyRepository(context);
       }
 
     // We will use same method for Like and Unlike
     // POST api/likes/userId/platformId/imageId/true|false     
     [HttpPost("{userId}/{platformId}/{imageId}/{likes}")]
-    public void Post (string userId, int platformId, int imageId, bool likes) {
-
+    public JsonResult Post (string userId, int platformId, int imageId, bool likes) {
       var myLike = (from like in _repository._likes.GetAll()
                     where (like.UserId == userId) && (like.PlatformId == platformId) && (like.ImageId == imageId)
                     select like).FirstOrDefault();
 
-      if (myLike != null) 
-      { //update like
+      if (myLike != null) { //update like
         myLike.Liked = likes;
         _repository._likes.AddOrUpdate(myLike);
         }
@@ -39,6 +37,17 @@ namespace ProductAPI.Controllers {
         _repository._likes.AddOrUpdate(newLike);
 
         }
+
+      var response = new {
+        Data = new {
+          ImageId = imageId,
+          UserId = userId,
+          Liked = myLike == null ? true : likes
+          },
+        Error = false
+        };
+      return Json(response);
+
       }
     }
   }
