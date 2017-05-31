@@ -59,7 +59,9 @@ namespace ProductAPI.Controllers {
       //saving image to a database
       _repository._images.AddOrUpdate(img);
 
-      return Ok(new { Name = imageUrl });
+      return Ok(new { 
+        Data = img,
+        Error = false});
       }
 
     }
