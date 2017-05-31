@@ -12,6 +12,11 @@ namespace ProductAPI.Repository {
       productEntity = context.Set<Product>();
       }
 
+      
+    public bool Exists (int id) {
+      return productEntity.Any(s => s.ProductId == id);
+      }
+
 
     public Product GetSingle (int id) {
       return productEntity.SingleOrDefault(s => s.ProductId == id);
@@ -31,7 +36,7 @@ namespace ProductAPI.Repository {
       }
 
     public void Save () {
-      throw new NotImplementedException();
+       _context.SaveChanges();
       }
     }
   }

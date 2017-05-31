@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ProductAPI.Models;
 
@@ -33,7 +34,7 @@ namespace ProductAPI.Repository {
       return imageEntity.AsQueryable();
       }
 
-    public IQueryable<Image> GetByProduct (int productCode, string listOrder) {
+    public IEnumerable<Image> GetByProduct (int productCode, string listOrder) {
 
       var popularImages = (
                            from image in _context.Image
@@ -49,9 +50,9 @@ namespace ProductAPI.Repository {
                                  .OrderByDescending(like => like.Timestamp);
 
         if (listOrder == "popular")
-            return popularImages.Select(res => res.image).AsQueryable();
+            return popularImages.Select(res => res.image).AsEnumerable();
         if (listOrder == "chronological")
-            return chronologicalImages.Select(res => res.image).AsQueryable();
+            return chronologicalImages.Select(res => res.image).AsEnumerable();
 
       return null;
       }

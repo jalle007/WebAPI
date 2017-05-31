@@ -28,6 +28,14 @@ namespace ProductAPI.Controllers {
     [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
     public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId, string title, string description) {
     
+      //error checking
+      string error = string.Empty;
+      if (file == null) error ="File missing.";
+      if ( ! _repository._products.Exists(productCode)) error += "Product ID not found. ";
+      if ( ! _repository._platform.Exists(platformId)) error += "Platform ID not found. ";
+      if (error != string.Empty) 
+         return Ok(new { Error = true, Message = error});
+
       var uploads = Path.Combine(_environment.WebRootPath, "images");
       string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
@@ -61,7 +69,8 @@ namespace ProductAPI.Controllers {
 
       return Ok(new { 
         Data = img,
-        Error = false});
+        Error = false,
+        Message = ""});
       }
 
     }
