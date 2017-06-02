@@ -17,9 +17,16 @@ namespace ProductAPI.Repository {
       return productEntity.Any(s => s.ProductId == id);
       }
 
+      public bool Exists (string sku) {
+    return productEntity.Any(s => s.SKU == sku);
+    }
 
     public Product GetSingle (int id) {
       return productEntity.SingleOrDefault(s => s.ProductId == id);
+      }
+
+          public Product GetSingle (string sku) {
+      return productEntity.SingleOrDefault(s => s.SKU == sku);
       }
 
     public IQueryable<Product> GetAll () {

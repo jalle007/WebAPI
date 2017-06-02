@@ -15,16 +15,16 @@ namespace ProductAPI.Controllers {
       _repository = new MyRepository(context);
       }
 
-    //GET /api/getimages/1/popular
-    [HttpGet("{productCode}/{listOrder}/{pageNo}/{pageSize}")]
-    public JsonResult Get (int productCode, string listOrder, int pageNo, int pageSize) {
+    //GET /api/getimages/sku/popular
+    [HttpGet("{sku}/{listOrder}/{pageNo}/{pageSize}")]
+    public JsonResult Get (string sku, string listOrder, int pageNo, int pageSize) {
       int skip = (pageNo - 1) * pageSize;
       dynamic response;
 
-      var result = _repository._images.GetByProduct(productCode, listOrder);
+      var result = _repository._images.GetByProduct(sku, listOrder);
       if (result.Any()) {
         var total1 = result.Count();
-        var images = _repository._images.GetByProduct(productCode, listOrder)
+        var images = _repository._images.GetByProduct(sku, listOrder)
                                                      .Skip(skip)
                                                      .Take(pageSize);
         response = new {

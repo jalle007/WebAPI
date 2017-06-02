@@ -25,19 +25,21 @@ namespace ProductAPI.Controllers {
       }
 
     //azure upload 
-    [HttpPost("upload/{userId}/{productCode}/{platformId}/{deviceType}/{deviceId}")]
-    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, int productCode, int platformId, string deviceType, string deviceId, string title, string description) {
+    [HttpPost("upload/{userId}/{sku}/{platformId}/{deviceType}/{deviceId}")]
+    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, string sku, int platformId, string deviceType, string deviceId, string title, string description) {
     
       //error checking
       string error = string.Empty;
       if (file == null) error ="File missing.";
-      if ( ! _repository._products.Exists(productCode)) error += "Product ID not found. ";
+      var product = _repository._products.GetSingle(sku);
+
+      if ( product == null) error += "Product SKU not found. ";
       if ( ! _repository._platform.Exists(platformId)) error += "Platform ID not found. ";
       if (error != string.Empty) 
          return Ok(new { Error = true, Message = error});
-
+      
       var uploads = Path.Combine(_environment.WebRootPath, "images");
-      string fileName = "product" + productCode + "-" + Path.GetRandomFileName() + "-" + file.FileName;
+      string fileName = "product" + sku + "-" + Path.GetRandomFileName() + "-" + file.FileName;
 
       string connStorage = Startup.connectionStrings.connStorage;
 
@@ -58,7 +60,7 @@ namespace ProductAPI.Controllers {
         Picture = imageUrl,
         DeviceId = deviceId,
         DeviceType = deviceType,
-        ProductId = productCode,
+        ProductId = product.ProductId,
         UserId = userId,
         Title=title,
         Description=description
@@ -67,10 +69,14 @@ namespace ProductAPI.Controllers {
       //saving image to a database
       _repository._images.AddOrUpdate(img);
 
-      return Ok(new { 
+
+      var response = new { 
         Data = img,
         Error = false,
-        Message = ""});
+        Message = ""};
+        
+        return Ok(response);
+
       }
 
     }

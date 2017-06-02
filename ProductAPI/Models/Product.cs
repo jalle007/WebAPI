@@ -12,6 +12,8 @@ namespace ProductAPI.Models
 
         public int ProductId { get; set; }
         public string Name { get; set; }
+        public string SKU { get; set; }
+
 
         public virtual ICollection<Image> Image { get; set; }
     }

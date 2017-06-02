@@ -91,6 +91,10 @@ namespace ProductAPI.Models
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
+                
+                entity.Property(e => e.SKU)
+                        .HasColumnName("SKU")
+                        .IsRequired();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
