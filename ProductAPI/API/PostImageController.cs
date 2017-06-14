@@ -30,6 +30,8 @@ namespace ProductAPI.Controllers {
     [HttpPost("upload/{userId}/{sku}/{platformId}/{deviceType}/{deviceId}")]
     public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, string sku, int platformId, string deviceType, string deviceId, string title, string description, string Username, string ProfilePicUrl) {
 
+    sku=sku.Replace("-","").Replace(" ","");
+
       //error checking
       string error = string.Empty;
       if (file == null) error = "File missing.";
@@ -47,7 +49,7 @@ namespace ProductAPI.Controllers {
 
       if (!_repository._platform.Exists(platformId)) error += "Platform ID not found. ";
       KOFProductResponse productKOF = _repository._kixify.GetProductAsync(product.SKU).Result;
-      if(productKOF==null)
+      if(productKOF.Data.Count==0)
           error += "SKU not found. ";
       if (error != "")
         return Ok(new { Error = true, Message = error });

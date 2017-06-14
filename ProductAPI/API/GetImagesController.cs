@@ -76,6 +76,7 @@ namespace ProductAPI.Controllers {
     [HttpGet("{sku}/{listOrder}/{pageNo}/{pageSize}")]
     public JsonResult Get (string sku, string listOrder, int pageNo, int pageSize) {
       ImagesList response;
+      sku=sku.Replace("-","").Replace(" ","");
       if (listOrder != "popular" && listOrder != "chronological")
         return Json(new ImagesList() {
           error = true,
