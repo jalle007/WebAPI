@@ -7,6 +7,7 @@ namespace ProductAPI.Repository {
     public ProductRepository _products;
     public LikeRepository _likes;
     public PlatformRepository _platform;
+    public KixifyRepository _kixify;
 
 
     public MyRepository (ProductLikesContext context) {
@@ -16,8 +17,7 @@ namespace ProductAPI.Repository {
       _products = new ProductRepository(context);
       _likes = new LikeRepository(context);
       _platform = new PlatformRepository(context);
+      _kixify = new KixifyRepository();
       }
-
-
     }
   }

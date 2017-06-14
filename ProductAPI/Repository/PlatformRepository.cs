@@ -12,7 +12,7 @@ namespace ProductAPI.Repository {
       }
 
     public bool Exists (int id) {
-      return entity.Any(s => s.PlatformId == id);
+      return  entity.Any(s => s.PlatformId == id);
       }
 
 

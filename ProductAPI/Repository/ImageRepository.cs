@@ -69,9 +69,9 @@ namespace ProductAPI.Repository {
                            .OrderByDescending(like => like.Count);
 
       var chronoImages = (from l in _context.Like
-                                 join image in _context.Image on l.ImageId equals image.ImageId
-                                 where (image.ProductId == product.ProductId)
-                                 select new { image, l.Timestamp })
+                          join image in _context.Image on l.ImageId equals image.ImageId
+                          where (image.ProductId == product.ProductId)
+                          select new { image, l.Timestamp })
                                  .OrderByDescending(like => like.Timestamp);
 
       if (listOrder == "popular")
@@ -81,6 +81,28 @@ namespace ProductAPI.Repository {
 
       return null;
       }
+
+    public IEnumerable<Image> GetAll (string listOrder) {
+
+      var popularImages = (
+                           from image in _context.Image
+                           join l in _context.Like on image.ImageId equals l.ImageId into likes
+                           select new { image, Count = likes.Where(like => like.Liked).Count() })
+                           .OrderByDescending(like => like.Count);
+
+      var chronoImages = (from l in _context.Like
+                          join image in _context.Image on l.ImageId equals image.ImageId
+                          select new { image, l.Timestamp })
+                                 .OrderByDescending(like => like.Timestamp);
+
+      if (listOrder == "popular")
+        return popularImages.Select(res => res.image).AsEnumerable();
+      if (listOrder == "chronological")
+        return chronoImages.Select(res => res.image).AsEnumerable();
+
+      return null;
+      }
+
 
     }
   }

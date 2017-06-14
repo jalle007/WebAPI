@@ -26,12 +26,14 @@ namespace ProductAPI.Models
                 entity.Property(e => e.ImageId).HasColumnName("ImageID");
 
                 entity.Property(e => e.Description).HasColumnType("varchar(1000)");
+                entity.Property(e => e.Username).HasColumnType("varchar(255)");
+                entity.Property(e => e.ProfilePicUrl).HasColumnType("varchar(1000)");
 
                 entity.Property(e => e.DeviceId)
                     .HasColumnName("DeviceID")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("varchar(255)");
 
-                entity.Property(e => e.DeviceType).HasColumnType("varchar(50)");
+                entity.Property(e => e.DeviceType).HasColumnType("varchar(255)");
 
                 entity.Property(e => e.Picture)
                     .IsRequired()
@@ -43,7 +45,7 @@ namespace ProductAPI.Models
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("varchar(255)");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Image)

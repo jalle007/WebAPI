@@ -39,7 +39,14 @@ namespace ProductAPI.Repository {
       }
 
     public void AddOrUpdate (Product entity) {
-      throw new NotImplementedException();
+     var any = _context.Product.Any(item => item == entity);
+      if (any) {
+        _context.Entry(entity).State = EntityState.Modified;
+        } else {
+        _context.Entry(entity).State = EntityState.Added;
+        }
+      Save();
+
       }
 
     public void Save () {

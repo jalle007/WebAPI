@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ProductAPI.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -28,7 +29,11 @@ namespace ProductAPI {
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices (IServiceCollection services) {
-      services.AddMvc();
+      services.AddMvc()
+     .AddJsonOptions(options =>
+      {
+          options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+      });
 
       var connSQL = connectionStrings.connSQL;
       services.AddDbContext<ProductLikesContext>(options => options.UseSqlServer(connSQL));
