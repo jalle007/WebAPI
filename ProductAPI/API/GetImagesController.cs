@@ -45,7 +45,8 @@ namespace ProductAPI.Controllers {
                                                            ProductId = img.ProductId,
                                                            UserId = img.UserId,
                                                            Username = img.Username,
-                                                           ProfilePicUrl = img.ProfilePicUrl
+                                                           ProfilePicUrl = img.ProfilePicUrl,
+                                                           Timestamp=img.Timestamp
                                                            });
 
         //2
@@ -101,7 +102,8 @@ namespace ProductAPI.Controllers {
                                                            ProductId = img.ProductId,
                                                            UserId = img.UserId,
                                                            Username = img.Username,
-                                                           ProfilePicUrl = img.ProfilePicUrl
+                                                           ProfilePicUrl = img.ProfilePicUrl,
+                                                           Timestamp=img.Timestamp
                                                            });
 
         //2
@@ -159,7 +161,8 @@ namespace ProductAPI.Controllers {
           ProductSKU = product.SKU,
           Liked = isLiked,
           Username = image.Username,
-          ProfilePicUrl = image.ProfilePicUrl
+          ProfilePicUrl = image.ProfilePicUrl,
+          Timestamp = image.Timestamp
           },
         Error = false
         };

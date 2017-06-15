@@ -28,7 +28,7 @@ namespace ProductAPI.Controllers {
 
     //upload to Azure
     [HttpPost("upload/{userId}/{sku}/{platformId}/{deviceType}/{deviceId}")]
-    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, string sku, int platformId, string deviceType, string deviceId, string title, string description, string Username, string ProfilePicUrl) {
+    public async Task<IActionResult> UploadFileAsBlob (IFormFile file, string userId, string sku, int platformId, string deviceType, string deviceId,  string Username, string ProfilePicUrl) {
 
     sku=sku.Replace("-","").Replace(" ","");
 

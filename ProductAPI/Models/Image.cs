@@ -20,6 +20,8 @@ namespace ProductAPI.Models {
     public string Description { get; set; }
     public string Username { get; set; }
     public string ProfilePicUrl { get; set; }
+    public DateTime Timestamp { get; set; }
+
     // [NotMapped]
     //public string ProductSKU { get; set; }
 
