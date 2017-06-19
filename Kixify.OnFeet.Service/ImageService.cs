@@ -54,6 +54,18 @@ namespace Kixify.OnFeet.Service
             await _context.SaveChangesAsync();
             return image;
         }
+        
+        public async Task<bool> DeleteImage( long Id)
+        {   
+            var image = _context.FindAsync<Image>(Id);
+            if (image != null) 
+            {
+              _context.Remove(image);
+              await _context.SaveChangesAsync();
+              return true;
+            }
+            return false;
+        }
 
         public async Task<ImageResponse> GetImages(string order, int page = 1, int pageSize = 100, string sku = null)
         {

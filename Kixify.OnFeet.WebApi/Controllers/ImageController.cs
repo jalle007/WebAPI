@@ -34,7 +34,15 @@ namespace Kixify.OnFeet.WebApi.Controllers
             });
         }
 
-
+        [HttpDelete]
+        public async Task<IActionResult> Delete( long Id)
+        {
+            var deleted = await _imageService.DeleteImage(Id);
+            return Ok(new ApiResponse()
+            {
+                Success = deleted,
+            });
+        }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromForm]ImageBindingModel model)
