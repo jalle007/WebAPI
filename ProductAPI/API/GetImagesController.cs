@@ -36,8 +36,8 @@ namespace ProductAPI.Controllers {
                                                          .Skip(skip)
                                                          .Take(pageSize)
                                                          .Select(img => new Models.Responses.Image {
-                                                           Title = img.Title,
-                                                           Description = img.Description,
+                                                           Title = "",
+                                                           Description ="",
                                                            Picture = img.Picture,
                                                            ImageId = img.ImageId,
                                                            DeviceId = img.DeviceId,
@@ -93,8 +93,8 @@ namespace ProductAPI.Controllers {
                                                          .Skip(skip)
                                                          .Take(pageSize)
                                                          .Select(img => new Models.Responses.Image {
-                                                           Title = img.Title,
-                                                           Description = img.Description,
+                                                           Title ="",
+                                                           Description = "",
                                                            Picture = img.Picture,
                                                            ImageId = img.ImageId,
                                                            DeviceId = img.DeviceId,
