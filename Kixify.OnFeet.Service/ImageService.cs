@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Kixify.OnFeet.Dal;
 using Kixify.OnFeet.Dal.Entity;
@@ -55,12 +55,26 @@ namespace Kixify.OnFeet.Service
             return image;
         }
 
-        public async Task<ImageResponse> GetImages(string order, int page = 1, int pageSize = 100)
+        public async Task<ImageResponse> GetImages(string order, int page = 1, int pageSize = 100, string sku = null)
         {
+
+            Expression<Func<Image, bool>> condition;
+
+            if (!string.IsNullOrEmpty(sku))
+            {
+                condition = (image) => image.Sku.ToLower() == sku.ToLower();
+            }
+            else
+            {
+                condition = (image) => true;
+            }
+
             if (order.ToLower() == "popular")
             {
-                var count = _context.Images.Count();
-                var imageItems = await _context.Images.OrderByDescending(img => img.Likes.Count)
+                var count = _context.Images.Where(condition).Count();
+                var imageItems = await _context.Images
+                    .Where(condition)
+                    .OrderByDescending(img => img.Likes.Count)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Select(img => new ImageItemResponse()
@@ -87,8 +101,10 @@ namespace Kixify.OnFeet.Service
 
             if (order.ToLower() == "chronological")
             {
-                var count = _context.Images.Count();
-                var imageItems = await _context.Images.OrderByDescending(img => img.Created)
+                var count = _context.Images.Where(condition).Count();
+                var imageItems = await _context.Images
+                    .Where(condition)
+                    .OrderByDescending(img => img.Created)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .Select(img => new ImageItemResponse()

@@ -6,6 +6,7 @@ using Kixify.OnFeet.Service;
 using Kixify.OnFeet.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Kixify.OnFeet.WebApi.Util;
 
 namespace Kixify.OnFeet.WebApi.Controllers
 {
@@ -23,15 +24,17 @@ namespace Kixify.OnFeet.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string order, int page = 1, int pageSize = 100)
+        public async Task<IActionResult> Get(string order, string sku = null, int page = 1, int pageSize = 100)
         {
-            var images = await _imageService.GetImages(order, page, pageSize);
+            var images = await _imageService.GetImages(order, page, pageSize, sku);
             return Ok(new ApiResponse()
             {
                 Success = true,
                 Data = images
             });
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Post([FromForm]ImageBindingModel model)
@@ -46,18 +49,7 @@ namespace Kixify.OnFeet.WebApi.Controllers
                 });
             }
 
-            if (Request.Form.Files == null || !Request.Form.Files.Any())
-            {
-                return Ok(new ApiResponse()
-                {
-                    Success = false,
-                    Message = "No files in your request"
-                });
-            }
-
-            var file = Request.Form.Files[0];
-
-            var uploadedPath = await _imageService.UplaodImage(Path.GetExtension(file.FileName), file.ContentType, file.OpenReadStream());
+            model.Sku = model.Sku.ToAlphaNumericOnly();
 
             var productDetails = _skuService.GetProductDetailsBySku(model.Sku);
 
@@ -80,6 +72,19 @@ namespace Kixify.OnFeet.WebApi.Controllers
                     Message = "Unable to get the product details from sku " + model.Sku
                 });
             }
+
+            if (Request.Form.Files == null || !Request.Form.Files.Any())
+            {
+                return Ok(new ApiResponse()
+                {
+                    Success = false,
+                    Message = "No files in your request"
+                });
+            }
+
+            var file = Request.Form.Files[0];
+
+            var uploadedPath = await _imageService.UplaodImage(Path.GetExtension(file.FileName), file.ContentType, file.OpenReadStream());
 
             var image = await _imageService.AddImage(new Image()
             {
