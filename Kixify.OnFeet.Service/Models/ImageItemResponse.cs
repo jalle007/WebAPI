@@ -7,6 +7,7 @@ namespace Kixify.OnFeet.Service.Models
     public class ImageResponse
     {
         public long Count { get; set; }
+        public long TotalPages { get; set; }
         public List<ImageItemResponse> Images{ get; set; }
     }
 

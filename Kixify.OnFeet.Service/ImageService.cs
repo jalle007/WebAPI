@@ -95,7 +95,8 @@ namespace Kixify.OnFeet.Service
                 return new ImageResponse()
                 {
                     Count = count,
-                    Images = imageItems
+                    Images = imageItems,
+                    TotalPages = (long)decimal.Ceiling((decimal)count/pageSize)
                 };
             }
 
@@ -125,7 +126,8 @@ namespace Kixify.OnFeet.Service
                 return new ImageResponse()
                 {
                     Count = count,
-                    Images = imageItems
+                    Images = imageItems,
+                    TotalPages = (long)decimal.Ceiling((decimal)count / pageSize)
                 };
             }
 
