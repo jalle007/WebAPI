@@ -55,7 +55,7 @@ namespace Kixify.OnFeet.Service
             return image;
         }
 
-        public async Task<ImageResponse> GetImages(string order, int page = 1, int pageSize = 100, string sku = null)
+        public async Task<ImageResponse> GetImages(string order, long userId, int page = 1, int pageSize = 100, string sku = null)
         {
 
             Expression<Func<Image, bool>> condition;
@@ -79,8 +79,10 @@ namespace Kixify.OnFeet.Service
                     .Take(pageSize)
                     .Select(img => new ImageItemResponse()
                     {
+                        Id = img.Id,
                         Platform = img.Platform,
                         Sku = img.Sku,
+                        EventId = img.EventId,
                         ImageUrl = img.ImageUrl,
                         Likes = img.Likes.LongCount(),
                         Title = img.Title,
@@ -88,7 +90,8 @@ namespace Kixify.OnFeet.Service
                         DeviceType = img.DeviceType,
                         ProfileUrl = img.ProfileUrl,
                         Username = img.Username,
-                        Created = img.Created
+                        Created = img.Created,
+                        UserLike = img.Likes.Any(like => like.UserId == userId)
                     })
                     .ToListAsync();
 
@@ -110,7 +113,9 @@ namespace Kixify.OnFeet.Service
                     .Take(pageSize)
                     .Select(img => new ImageItemResponse()
                     {
+                        Id = img.Id,
                         Platform = img.Platform,
+                        EventId = img.EventId,
                         Sku = img.Sku,
                         ImageUrl = img.ImageUrl,
                         Likes = img.Likes.LongCount(),
@@ -119,7 +124,8 @@ namespace Kixify.OnFeet.Service
                         DeviceType = img.DeviceType,
                         ProfileUrl = img.ProfileUrl,
                         Username = img.Username,
-                        Created = img.Created
+                        Created = img.Created,
+                        UserLike = img.Likes.Any(like => like.UserId == userId)
                     })
                     .ToListAsync();
 

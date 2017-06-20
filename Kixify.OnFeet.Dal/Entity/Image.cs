@@ -11,6 +11,7 @@ namespace Kixify.OnFeet.Dal.Entity
         public string DeviceToken { get; set; }
         public string ImageUrl { get; set; }
         public long UserId { get; set; }
+        public long EventId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Sku { get; set; }

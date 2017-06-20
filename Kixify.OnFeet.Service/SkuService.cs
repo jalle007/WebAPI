@@ -44,5 +44,6 @@ namespace Kixify.OnFeet.Service
         public string Sku { get; set; }
         public string[] BrandCollection { get; set; }
         public string ThumbUrl { get; set; }
+        public long EventId { get; set; }
     }
 }
