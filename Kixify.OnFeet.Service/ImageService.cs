@@ -57,7 +57,7 @@ namespace Kixify.OnFeet.Service
         
         public async Task<bool> DeleteImage( long Id)
         {   
-            var image = _context.FindAsync<Image>(Id);
+            var image = _context.FindAsync<Image>(Id).Result;
             if (image != null) 
             {
               _context.Remove(image);
