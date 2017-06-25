@@ -131,7 +131,8 @@ namespace Kixify.OnFeet.Service
                         DeviceType = img.DeviceType,
                         ProfileUrl = img.ProfileUrl,
                         Username = img.Username,
-                        Created = img.Created
+                        Created = img.Created,
+                        Id=img.Id
                     })
                     .ToListAsync();
 
