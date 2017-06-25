@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kixify.OnFeet.Dal", "Kixify.OnFeet.Dal\Kixify.OnFeet.Dal.csproj", "{2CE3DA46-8F55-42FD-AD33-4CB154A47F0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kixify.OnFeet.Dal", "Kixify.OnFeet.Dal\Kixify.OnFeet.Dal.csproj", "{2CE3DA46-8F55-42FD-AD33-4CB154A47F0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kixify.OnFeet.Service", "Kixify.OnFeet.Service\Kixify.OnFeet.Service.csproj", "{AA0A596E-E870-4829-A40D-DAA24922D0F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kixify.OnFeet.Service", "Kixify.OnFeet.Service\Kixify.OnFeet.Service.csproj", "{AA0A596E-E870-4829-A40D-DAA24922D0F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kixify.OnFeet.WebApi", "Kixify.OnFeet.WebApi\Kixify.OnFeet.WebApi.csproj", "{FEB3856B-6796-4ABF-A741-0504A6C40C37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kixify.OnFeet.WebApi", "Kixify.OnFeet.WebApi\Kixify.OnFeet.WebApi.csproj", "{FEB3856B-6796-4ABF-A741-0504A6C40C37}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kixify.Dashboard", "Kixify.Dashboard\Kixify.Dashboard.csproj", "{AC8C4D46-207D-4F1B-BCBD-5F6B01D240D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{FEB3856B-6796-4ABF-A741-0504A6C40C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEB3856B-6796-4ABF-A741-0504A6C40C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEB3856B-6796-4ABF-A741-0504A6C40C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8C4D46-207D-4F1B-BCBD-5F6B01D240D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8C4D46-207D-4F1B-BCBD-5F6B01D240D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8C4D46-207D-4F1B-BCBD-5F6B01D240D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8C4D46-207D-4F1B-BCBD-5F6B01D240D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

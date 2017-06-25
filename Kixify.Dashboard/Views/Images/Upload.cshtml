@@ -1,0 +1,121 @@
+@model Kixify.OnFeet.Service.Models.ImageItemResponse
+<h3>Upload product image</h3>
+<hr />
+
+<form asp-action="Upload"
+      asp-controller="Images"
+      method="post"
+      enctype="multipart/form-data">
+
+    <div class="form-horizontal">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <input type="hidden" asp-for="Id" />
+
+      <div class="form-group">
+        <label asp-for="DeviceType" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+
+          <select asp-for="DeviceType" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.DeviceType>()" >
+            <option selected="selected" value="999">None</option>
+          </select>
+
+          <span asp-validation-for="DeviceType" class="text-danger"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label asp-for="Platform" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+
+          <select asp-for="Platform" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.Platform>()">
+            <option selected="selected" value="2">Kixify</option>
+          </select>
+
+          <span asp-validation-for="Platform" class="text-danger"></span>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label asp-for="Sku" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+          <div id="sku-div">
+            <p>
+              @{
+                var SKUs = (List<string>)ViewBag.SKUs;
+                @Html.DropDownList("Sku", new SelectList(SKUs), new { onchange = "this.form.submit();" })
+              }
+            </p>
+          </div>
+         @* <input asp-for="Sku" class="form-control" />*@
+          <span asp-validation-for="Sku" class="text-danger"></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label asp-for="Title" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+          <input asp-for="Title" class="form-control" />
+          <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label asp-for="UserId" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+          <input asp-for="UserId" class="form-control" type="text" />
+          <span asp-validation-for="UserId" class="text-danger"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label asp-for="Username" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+          <input asp-for="Username" class="form-control" />
+          <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label asp-for="ProfileUrl" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+          <input asp-for="ProfileUrl" class="form-control" />
+          <span asp-validation-for="ProfileUrl" class="text-danger"></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-2 control-label">Image</label>
+        <div class="col-md-10">
+          @*<input asp-for="ImageUrl" class="form-control" />*@
+          <input type="file" name="files" multiple />
+          <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <input type="submit" value="Save" class="btn btn-info" />
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div>
+    <a asp-action="Index" asp-controller="Home">Back to List</a>
+  </div>
+
+  @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        break;
+        $("#Sku").keyup(function () {
+          var notEmpty = $("#Sku").val() != "";
+          console.log("notEmpty ", notEmpty);
+          $("#skuList").prop("disabled", notEmpty);
+        });
+
+      })
+    </script>
+  }
