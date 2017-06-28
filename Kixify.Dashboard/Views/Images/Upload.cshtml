@@ -16,7 +16,7 @@
         <div class="col-md-10">
 
           <select asp-for="DeviceType" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.DeviceType>()" >
-            <option selected="selected" value="999">None</option>
+            @*<option selected="selected" value="999">None</option>*@
           </select>
 
           <span asp-validation-for="DeviceType" class="text-danger"></span>
@@ -27,7 +27,7 @@
         <div class="col-md-10">
 
           <select asp-for="Platform" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.Platform>()">
-            <option selected="selected" value="2">Kixify</option>
+            @*<option selected="selected" value="2">Kixify</option>*@
           </select>
 
           <span asp-validation-for="Platform" class="text-danger"></span>
@@ -63,7 +63,7 @@
       <div class="form-group">
         <label asp-for="UserId" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-          <input asp-for="UserId" class="form-control" type="text" />
+          <input asp-for="UserId" class="form-control" type="number" />
           <span asp-validation-for="UserId" class="text-danger"></span>
         </div>
       </div>
@@ -109,12 +109,17 @@
 
     <script type="text/javascript">
       $(document).ready(function () {
-        break;
-        $("#Sku").keyup(function () {
-          var notEmpty = $("#Sku").val() != "";
-          console.log("notEmpty ", notEmpty);
-          $("#skuList").prop("disabled", notEmpty);
-        });
+        $("#DeviceType").val(999);
+        $("#Platform").val(2);
+
+
+
+        //break;
+        //$("#Sku").keyup(function () {
+        //  var notEmpty = $("#Sku").val() != "";
+        //  console.log("notEmpty ", notEmpty);
+        //  $("#skuList").prop("disabled", notEmpty);
+        //});
 
       })
     </script>

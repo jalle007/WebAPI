@@ -67,6 +67,7 @@ namespace Kixify.Dashboard.Controllers {
       model.Sku = model.Sku.ToAlphaNumericOnly();
 
       var productDetails = _skuService.GetProductDetailsBySku(model.Sku);
+    
       if (!productDetails.Success || productDetails.Data == null || !productDetails.Data.Any()) {
         return Ok(new ApiResponse() {
           Success = false,

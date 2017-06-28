@@ -8,12 +8,12 @@
     <span style="font-weight: bold;">
       Search :&nbsp;&nbsp;
     </span>
-      <input id="sku" name="sku" value="" autocomplete="on" class="text-box single-line ui-autocomplete-input" type="text">
+      <input id="sku1" name="sku1" value="" autocomplete="on" class="text-box single-line ui-autocomplete-input" type="text">
   
-    @*@{
+    @{
   var SKUs = (List<string>)ViewBag.SKUs;
   @Html.DropDownList("sku", new SelectList(SKUs), new { onchange = "this.form.submit();" })
-  }*@
+  }
   </p>
   }
 </div>
@@ -121,20 +121,21 @@
 </style>
 <script type="text/javascript">
   $(document).ready(function () {
-    $("#sku").autocomplete({
+    $("#sku1").autocomplete({
       autoFocus: true,
       minLength: 2,
       select: function (event, ui) {
-        //console.log(ui.item.label);
-        $.ajax({
-          url: "/Images/Index",
-          type: "POST",
-          dataType: "json",
-          data: { sku: ui.item.label },
-          success: function (data) {
+        console.log(ui.item.label);
+
+        //$.ajax({
+        //  url: "/Images/Index",
+        //  type: "POST",
+        //  dataType: "json",
+        //  data: { sku: ui.item.label },
+        //  success: function (data) {
         
-          }
-        })
+        //  }
+        //})
 
       },
       source: function (request, response) {
