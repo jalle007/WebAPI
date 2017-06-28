@@ -67,7 +67,7 @@ namespace Kixify.OnFeet.Service
             return false;
         }
 
-        public async Task<ImageResponse> GetImages(string order, int page = 1, int pageSize = 100, string sku = null)
+        public async Task<ImageResponse> GetImages(string order, long userId, int page = 1, int pageSize = 100, string sku = null)
         {
 
             Expression<Func<Image, bool>> condition;
@@ -150,8 +150,7 @@ namespace Kixify.OnFeet.Service
             }
 
             throw new ServiceException("Invalid order type");
-        }
-
+}
         public async Task Like(long imageId, long userid, Platform platform, bool like)
         {
             var image = await _context.Images.Where(img => img.Id == imageId).FirstOrDefaultAsync();

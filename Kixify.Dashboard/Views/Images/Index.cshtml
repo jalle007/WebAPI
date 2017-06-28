@@ -1,15 +1,15 @@
 @model List<ImagesViewModel>
-<h3>Remove image from database</h3>
+<h3>Search images </h3>
 <hr />
 
 <div id="sku-div" style="position:absolute;">
   @using (Html.BeginForm("Index", "Images", FormMethod.Post, new {  id = "frm2" })) {
   <p>
     <span style="font-weight: bold;">
-      Search :&nbsp;&nbsp;
+      @*Search :&nbsp;&nbsp;*@
     </span>
       <input id="sku1" name="sku1" value="" autocomplete="on" class="text-box single-line ui-autocomplete-input" type="text">
-  
+    <input type="submit" id="btSearch" value="Search" />&nbsp;or&nbsp;
     @{
   var SKUs = (List<string>)ViewBag.SKUs;
   @Html.DropDownList("sku", new SelectList(SKUs), new { onchange = "this.form.submit();" })
@@ -51,7 +51,7 @@
     <tr>
 
       <td>
-        <img src="@Html.DisplayFor(modelItem => item.Image.ImageUrl)" height="180" width="180"/>
+        <img src="@Html.DisplayFor(modelItem => item.Image.ImageUrl)" height="100" width="100"/>
         <br />
         @Html.DisplayFor(modelItem => item.Image.Title) 
       </td>
@@ -121,22 +121,25 @@
 </style>
 <script type="text/javascript">
   $(document).ready(function () {
+    $("#btSearch").click(function () {
+      console.log(ui.item.value);
+
+      $.ajax({
+          url: "/Images/Index",
+          type: "POST",
+          dataType: "json",
+          data: { sku: ui.item.value },
+          success: function (data) {
+
+          }
+        })
+    });
+
     $("#sku1").autocomplete({
       autoFocus: true,
       minLength: 2,
       select: function (event, ui) {
-        console.log(ui.item.label);
-
-        //$.ajax({
-        //  url: "/Images/Index",
-        //  type: "POST",
-        //  dataType: "json",
-        //  data: { sku: ui.item.label },
-        //  success: function (data) {
-        
-        //  }
-        //})
-
+        console.log(ui.item.value);
       },
       source: function (request, response) {
         $.ajax({

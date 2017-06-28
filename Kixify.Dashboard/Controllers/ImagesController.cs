@@ -33,8 +33,8 @@ namespace Kixify.Dashboard.Controllers {
 
     [HttpPost]
     public async Task<JsonResult> Autocomplete (string Prefix) {
-   if(skus.IsNull()) skus=await GetSKUsAsync(false);
-    var res = skus.Where(sku=>sku.ToLower().StartsWith(Prefix.ToLower())).ToList();
+      if (skus.IsNull()) skus = await GetSKUsAsync(false);
+      var res = skus.Where(sku => sku.ToLower().StartsWith(Prefix.ToLower())).ToList();
 
       return Json(res);
       }
@@ -60,27 +60,28 @@ namespace Kixify.Dashboard.Controllers {
         return Ok(new ApiResponse() {
           Success = false,
           Message = "Invalid data",
-          Data = null
+          Data = ModelState
           });
         }
+
+      var sku1 = (string)Request.Form["sku1"];
+      if (sku1 != "") model.Sku = sku1;
 
       model.Sku = model.Sku.ToAlphaNumericOnly();
 
       var productDetails = _skuService.GetProductDetailsBySku(model.Sku);
-    
+      SkuServiceProduct skuServiceProduct = null;
+
       if (!productDetails.Success || productDetails.Data == null || !productDetails.Data.Any()) {
-        return Ok(new ApiResponse() {
-          Success = false,
-          Message = "Unable to get the product details from sku " + model.Sku
-          });
+        skuServiceProduct = null;
+        } else {
+        skuServiceProduct = productDetails.Data.First();
+
+        if (skuServiceProduct.Sku.ToLower() != model.Sku.ToAlphaNumericOnly().ToLower()) {
+          skuServiceProduct = null;
+          }
         }
-      var skuServiceProduct = productDetails.Data.First();
-      if (skuServiceProduct.Sku.ToLower() != model.Sku.ToLower()) {
-        return Ok(new ApiResponse() {
-          Success = false,
-          Message = "Unable to get the product details from sku " + model.Sku
-          });
-        }
+
       if (Request.Form.Files == null || !Request.Form.Files.Any()) {
         return Ok(new ApiResponse() {
           Success = false,
@@ -89,13 +90,15 @@ namespace Kixify.Dashboard.Controllers {
         }
 
       var file = Request.Form.Files[0];
+
       var uploadedPath = await _imageService.UplaodImage(Path.GetExtension(file.FileName), file.ContentType, file.OpenReadStream());
 
       var image = await _imageService.AddImage(new Image() {
         Created = DateTimeOffset.UtcNow,
         Sku = model.Sku,
+        EventId = skuServiceProduct?.Id,
         Platform = model.Platform,
-        Title = skuServiceProduct.Title,
+        Title = skuServiceProduct == null ? model.Title : skuServiceProduct.Title,
         DeviceToken = model.DeviceToken,
         DeviceType = model.DeviceType,
         ProfileUrl = model.ProfileUrl,
@@ -107,20 +110,18 @@ namespace Kixify.Dashboard.Controllers {
       return RedirectToAction("Index", "Images");
       }
 
-
-
     // GET: Images
     [HttpGet]
     public async Task<IActionResult> Index () {
       return View(await GetImages());
       }
 
-
     [HttpPost]
     public async Task<IActionResult> Index (string sku) {
-      if (sku == sAll) return RedirectToAction("Index", "Images");
+      var sku1 = (string)Request.Form["sku1"];
+      if (sku == sAll && sku1 == "") return RedirectToAction("Index", "Images");
 
-      return View(await GetImages(sku));
+      return View(await GetImages(sku1 != "" ? sku1 : sku));
       }
 
 
@@ -128,7 +129,7 @@ namespace Kixify.Dashboard.Controllers {
       if (ViewBag.SKUs == null)
         ViewBag.SKUs = await GetSKUsAsync();
 
-      var imageResponse = await _imageService.GetImages("chronological", 1, 100, sku);
+      var imageResponse = await _imageService.GetImages("chronological", 0, 1, 100, sku);
 
       var imagesView = new List<ImagesViewModel>() { };
       foreach (var img in imageResponse.Images) {
@@ -168,7 +169,7 @@ namespace Kixify.Dashboard.Controllers {
       }
 
     public async Task<List<string>> GetSKUsAsync (bool all = true) {
-      var images = await _imageService.GetImages("chronological", 1, int.MaxValue, null);
+      var images = await _imageService.GetImages("chronological", 0, 1, int.MaxValue, null);
       var SKUs = images.Images.Select(l => l.Sku).Distinct().ToList();
 
       if (all) SKUs.Insert(0, sAll);
