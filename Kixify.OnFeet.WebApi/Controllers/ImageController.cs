@@ -52,24 +52,20 @@ namespace Kixify.OnFeet.WebApi.Controllers
 
             var productDetails = _skuService.GetProductDetailsBySku(model.Sku);
 
+            SkuServiceProduct skuServiceProduct = null;
+
             if (!productDetails.Success || productDetails.Data == null || !productDetails.Data.Any())
             {
-                return Ok(new ApiResponse()
-                {
-                    Success = false,
-                    Message = "Unable to get the product details from sku " + model.Sku
-                });
+                skuServiceProduct = null;
             }
-
-            var skuServiceProduct = productDetails.Data.First();
-
-            if (skuServiceProduct.Sku.ToLower() != model.Sku.ToLower())
+            else
             {
-                return Ok(new ApiResponse()
+                skuServiceProduct = productDetails.Data.First();
+
+                if (skuServiceProduct.Sku.ToLower() != model.Sku.ToAlphaNumericOnly().ToLower())
                 {
-                    Success = false,
-                    Message = "Unable to get the product details from sku " + model.Sku
-                });
+                    skuServiceProduct = null;
+                }
             }
 
             if (Request.Form.Files == null || !Request.Form.Files.Any())
@@ -89,9 +85,9 @@ namespace Kixify.OnFeet.WebApi.Controllers
             {
                 Created = DateTimeOffset.UtcNow,
                 Sku = model.Sku,
-                EventId = skuServiceProduct.Id,
+                EventId = skuServiceProduct?.Id,
                 Platform = model.Platform,
-                Title = skuServiceProduct.Title,
+                Title = skuServiceProduct == null? model.Title : skuServiceProduct.Title,
                 DeviceToken = model.DeviceToken,
                 DeviceType = model.DeviceType,
                 ProfileUrl = model.ProfileUrl,
