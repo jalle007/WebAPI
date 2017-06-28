@@ -9,9 +9,10 @@ using Kixify.OnFeet.Dal.Entity;
 namespace Kixify.OnFeet.Dal.Migrations
 {
     [DbContext(typeof(OnFeetContext))]
-    partial class OnFeetContextModelSnapshot : ModelSnapshot
+    [Migration("20170620052148_changeset03")]
+    partial class changeset03
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -30,7 +31,7 @@ namespace Kixify.OnFeet.Dal.Migrations
 
                     b.Property<int>("DeviceType");
 
-                    b.Property<long?>("EventId");
+                    b.Property<long>("EventId");
 
                     b.Property<string>("ImageUrl");
 

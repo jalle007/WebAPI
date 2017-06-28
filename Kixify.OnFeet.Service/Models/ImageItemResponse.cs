@@ -20,9 +20,11 @@ namespace Kixify.OnFeet.Service.Models
         public long UserId { get; set; }
         public string Title { get; set; }
         public string Sku { get; set; }
+        public long? EventId { get; set; }
         public string Username { get; set; }
         public string ProfileUrl { get; set; }
         public long Likes { get; set; }
         public DateTimeOffset Created { get; set; }
+        public bool UserLike { get; set; }
     }
 }

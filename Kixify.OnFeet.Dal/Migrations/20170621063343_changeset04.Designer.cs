@@ -9,9 +9,10 @@ using Kixify.OnFeet.Dal.Entity;
 namespace Kixify.OnFeet.Dal.Migrations
 {
     [DbContext(typeof(OnFeetContext))]
-    partial class OnFeetContextModelSnapshot : ModelSnapshot
+    [Migration("20170621063343_changeset04")]
+    partial class changeset04
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
