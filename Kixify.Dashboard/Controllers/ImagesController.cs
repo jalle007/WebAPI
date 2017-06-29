@@ -13,16 +13,17 @@ using Microsoft.AspNetCore.Http;
 using Kixify.Dashboard.Util;
 using System.IO;
 using Kixify.OnFeet.Dal.Entity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Kixify.Dashboard.Controllers {
   [Authorize]
   public class ImagesController : Controller {
     private readonly ApplicationDbContext _context;
     private IHostingEnvironment _env;
-    public const string sAll = "-- ALL --";
-    List<string> skus;
     private readonly ImageService _imageService;
     private readonly SkuService _skuService;
+    public const string sAll = "-- ALL --";
+    List<SelectListItem> skus;
 
     public ImagesController (ApplicationDbContext context, IHostingEnvironment env, ImageService imageService, SkuService skuService) {
       _context = context;
@@ -34,7 +35,10 @@ namespace Kixify.Dashboard.Controllers {
     [HttpPost]
     public async Task<JsonResult> Autocomplete (string Prefix) {
       if (skus.IsNull()) skus = await GetSKUsAsync(false);
-      var res = skus.Where(sku => sku.ToLower().StartsWith(Prefix.ToLower())).ToList();
+
+      var res = (from s in skus
+                 where s.Value.ToLower().StartsWith(Prefix.ToLower()) || s.Text.ToLower().Contains(Prefix.ToLower())
+                 select s).ToList();
 
       return Json(res);
       }
@@ -46,9 +50,9 @@ namespace Kixify.Dashboard.Controllers {
 
     [HttpGet]
     public async Task<IActionResult> Upload (IList<IFormFile> files) {
-      if (ViewBag.SKUs == null) {
-        ViewBag.SKUs = await GetSKUsAsync(false);
-        // ViewBag.SKUs.Insert(0, "new");
+      if (skus == null) {
+        skus = (await GetSKUsAsync(false));
+        ViewBag.SKUs = skus;
         }
 
       return View();
@@ -119,15 +123,16 @@ namespace Kixify.Dashboard.Controllers {
     [HttpPost]
     public async Task<IActionResult> Index (string sku) {
       var sku1 = (string)Request.Form["sku1"];
-      if (sku == sAll && sku1 == "") return RedirectToAction("Index", "Images");
+      if (sku.Contains(sAll) && sku1 == "") return RedirectToAction("Index", "Images");
 
       return View(await GetImages(sku1 != "" ? sku1 : sku));
       }
 
-
     private async Task<List<ImagesViewModel>> GetImages (string sku = null) {
-      if (ViewBag.SKUs == null)
-        ViewBag.SKUs = await GetSKUsAsync();
+      if (skus == null) {
+        skus = (await GetSKUsAsync(true));
+        ViewBag.SKUs = skus;
+        }
 
       var imageResponse = await _imageService.GetImages("chronological", 0, 1, 100, sku);
 
@@ -151,7 +156,7 @@ namespace Kixify.Dashboard.Controllers {
       return RedirectToAction("Index");
       }
 
-    // POST: Images/Delete/selected  List<ImageItemResponse> model
+    // POST: Images/Delete/selected  
     [HttpPost]
     public async Task<IActionResult> DeleteSelected (List<ImagesViewModel> model) {
 
@@ -168,12 +173,24 @@ namespace Kixify.Dashboard.Controllers {
       return RedirectToAction("Index");
       }
 
-    public async Task<List<string>> GetSKUsAsync (bool all = true) {
+    public async Task<List<SelectListItem>> GetSKUsAsync (bool all = true) {
       var images = await _imageService.GetImages("chronological", 0, 1, int.MaxValue, null);
-      var SKUs = images.Images.Select(l => l.Sku).Distinct().ToList();
 
-      if (all) SKUs.Insert(0, sAll);
+      var SKUs = images.Images
+                                  .Select(s => new SelectListItem { Value = s.Sku, Text = $"{s.Sku} - ({s.Title})" })
+                                  .Distinct().ToList();
+
+      if (all) SKUs.Insert(0, new SelectListItem { Value = sAll, Text = sAll });
       return SKUs;
+      }
+
+    public List<string> JoinSKUandTitle (List<AutocompleteViewModel> SKUs) {
+      var result = new List<string>();
+
+      foreach (var sku in SKUs) {
+        result.Add($"{sku.Value} ({sku.Text})");
+        }
+      return result;
       }
     }
   }

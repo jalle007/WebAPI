@@ -14,24 +14,19 @@
       <div class="form-group">
         <label asp-for="DeviceType" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-
           <select asp-for="DeviceType" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.DeviceType>()" >
           </select>
-
           <span asp-validation-for="DeviceType" class="text-danger"></span>
         </div>
       </div>
       <div class="form-group">
         <label asp-for="Platform" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-
           <select asp-for="Platform" asp-items="Html.GetEnumSelectList<Kixify.OnFeet.Dal.Entity.Platform>()">
           </select>
-
           <span asp-validation-for="Platform" class="text-danger"></span>
         </div>
       </div>
-
 
       <div class="form-group">
         <label asp-for="Sku" class="col-md-2 control-label"></label>
@@ -42,8 +37,8 @@
             <br />or&nbsp;
             <p>
               @{
-                var SKUs = (List<string>)ViewBag.SKUs;
-                @Html.DropDownList("Sku", new SelectList(SKUs), new { onchange = "this.form.submit();" })
+                var SKUs = (IEnumerable<SelectListItem>)ViewBag.SKUs;
+                @Html.DropDownList("sku", SKUs, new { onchange = "this.form.submit();", style = "width: 132px;" })
               }
             </p>
           </div>
@@ -92,7 +87,6 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
           <input type="submit" value="Save" class="btn btn-info" />
@@ -112,13 +106,6 @@
       $(document).ready(function () {
         $("#DeviceType").val(999);
         $("#Platform").val(2);
-        //break;
-        //$("#Sku").keyup(function () {
-        //  var notEmpty = $("#Sku").val() != "";
-        //  console.log("notEmpty ", notEmpty);
-        //  $("#skuList").prop("disabled", notEmpty);
-        //});
-
       })
     </script>
 
@@ -136,13 +123,13 @@
 <script type="text/javascript">
   $(document).ready(function () {
     $("#btSearch").click(function () {
-      console.log(ui.item.label);
+      console.log(ui.item.value);
 
       $.ajax({
         url: "/Images/Index",
         type: "POST",
         dataType: "json",
-        data: { sku: ui.item.label },
+        data: { sku: ui.item.value },
         success: function (data) {
 
         }
@@ -153,7 +140,7 @@
       autoFocus: true,
       minLength: 2,
       select: function (event, ui) {
-        console.log(ui.item.label);
+        console.log(ui.item.value);
       },
       source: function (request, response) {
         $.ajax({
@@ -163,7 +150,7 @@
           data: { Prefix: request.term },
           success: function (data) {
             response($.map(data, function (item) {
-              return { label: item, value: item };
+              return { label: item.text, value: item.value };
             }))
 
           }
